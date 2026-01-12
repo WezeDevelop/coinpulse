@@ -2,10 +2,14 @@ import { fetcher } from '@/lib/coingecko.actions';
 import React from 'react'
 import Image from 'next/image'
 import { cn, formatCurrency } from '@/lib/utils';
+import { CoinOverviewFallback } from './fallback';
 
 
 const CoinOverview = async () => {
-    const coin = await fetcher<CoinDetailsData>(
+let coin;
+
+    try {
+    coin = await fetcher<CoinDetailsData>(
       'coins/bitcoin',
       {
         localization: false,
@@ -16,6 +20,10 @@ const CoinOverview = async () => {
         sparkline: false,
       }
     );
+} catch (error) {
+    console.error('Error fetching coin overview:', error);
+    return <CoinOverviewFallback/>
+}
   return (
     <div id='coin-overview'>
         <div className="header pt-2">
